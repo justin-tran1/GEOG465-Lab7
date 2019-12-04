@@ -25,19 +25,19 @@ function popStyle(feature){
   }
 
 function popUp2000(feature,layer){
-  layer.bindPopup('Census tract: '+ feature.properties.NAME + '\n Total Population: ' + feature.properties.TotPop);
+  layer.bindPopup('Census tract: '+ feature.properties.NAME + 'Total Population: ' + feature.properties.TotPop);
   layer.on('mouseover', function(){layer.openPopup();});
   layer.on('mouseout', function(){layer.closePopup();});
 }
 
 function popUp2010(feature,layer){
-  layer.bindPopup('Census tract: '+ feature.properties.OBJECTID + '\n Total Population: ' + feature.properties.E01003097);
+  layer.bindPopup('Census tract: '+ feature.properties.OBJECTID + 'Total Population: ' + feature.properties.E01003097);
   layer.on('mouseover', function(){layer.openPopup();});
   layer.on('mouseout', function(){layer.closePopup();});
 }
 
 function popUpCustom(feature,layer){
-  layer.bindPopup('Census tract: '+ feature.properties.OBJECTID + '\n Number of People of Color: ' + feature.properties.POC);
+  layer.bindPopup('Census tract: '+ feature.properties.OBJECTID + 'Number of People of Color: ' + feature.properties.POC);
   layer.on('mouseover', function(){layer.openPopup();});
   layer.on('mouseout', function(){layer.closePopup();});
 }
