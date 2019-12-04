@@ -16,13 +16,28 @@
                     x > 3000? '#66c2a4':
                     x > 2000? '#99d8c9':
                     x > 1000? '#ccece6': '#a6bddb';}
+
+
+
                     function popStyle(feature){
-                    return {fillColor:classification(feature.properties.TotPop),
-                    weight:1,
-                    opacity:1,
-                    color:'white',
-                    fillOpacity:0.85};}
-                    var pop2000Layer = L.geoJSON(myData, {style: popStyle}).addTo(mymap);
+                                        return {fillColor:classification(feature.properties.TotPop),
+                                        weight:1,
+                                        opacity:1,
+                                        color:'white',
+                                        fillOpacity:0.85};}
+
+
+                                        function popUp2000(feature,layer){
+                                        layer.bindPopup('Census tract: '+ feature.properties.NAME);
+                                        layer.on('mouseover', function(){layer.openPopup();});
+                                        //layer.on('mouseover', newStyle);
+                                        //layer.on('mouseout', oldStyle);
+                                        layer.on('mouseout', function(){layer.closePopup();});
+                                      }
+
+
+
+var pop2000Layer = L.geoJSON(myData, {style: popStyle, onEachFeature:popUp2000}).addTo(mymap);
         </script>
 </body>
 </html>

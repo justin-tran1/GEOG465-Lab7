@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <title>Geog465 Lab7</title>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
+</head>
+<body>
+      <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+      <script src = "KCPop2000.js"></script>
+      <div id="mapid" style="width: 800px; height: 600px; margin:auto;"></div>
+
+
+<script>
+
+var mymap = L.map('mapid', { center:[47.6062, -122.3321],  zoom:10 });
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mymap);
+
+function popStyle(feature){
+  return {fillColor:classification(feature.properties.TotPop),
+    weight:1,
+    opacity:1,
+    color:'white',
+    fillOpacity:0.85};
+  }
+
+function popUp2000(feature,layer){
+  layer.bindPopup('Census tract: '+ feature.properties.NAME + '\n Total Population: ' + feature.properties.TotPop);
+  layer.on('mouseover', function(){layer.openPopup();});
+  layer.on('mouseout', function(){layer.closePopup();});
+}
+
+function popUp2010(feature,layer){
+  layer.bindPopup('Census tract: '+ feature.properties.OBJECTID + '\n Total Population: ' + feature.properties.E01003097);
+  layer.on('mouseover', function(){layer.openPopup();});
+  layer.on('mouseout', function(){layer.closePopup();});
+}
+
+function popUpCustom(feature,layer){
+  layer.bindPopup('Census tract: '+ feature.properties.OBJECTID + '\n Number of People of Color: ' + feature.properties.POC);
+  layer.on('mouseover', function(){layer.openPopup();});
+  layer.on('mouseout', function(){layer.closePopup();});
+}
+
+
+function classification(x){
+  return x > 5000? '#006d2c':
+  x > 4000? '#2ca25f':
+  x > 3000? '#66c2a4':
+  x > 2000? '#99d8c9':
+  x > 1000? '#ccece6': '#a6bddb';
+}
+
+function classificationCustom(x){
+  return x > 1500? '#a50f15':
+  x > 1200? '#de2d26':
+  x > 900? '#fb6a4a':
+  x > 600? '#fcae91':
+  x > 300? '#fee5d9': '#a6bddb';
+}
+
+function pop2000(){
+  pop2000Layer.addTo(mymap);
+  mymap.removeLayer(pop2010Layer);
+  mymap.removeLayer(customPop);
+}
+
+function pop2010(){
+  pop2010Layer.addTo(mymap);
+  mymap.removeLayer(pop2000Layer);
+  mymap.removeLayer(customPop);
+}
+
+function customPop(){
+  customLayer.addTo(mymap);
+  mymap.removeLayer(pop2000Layer);
+  mymap.removeLayer(pop2010Layer);
+}
+
+var pop2000Layer = L.geoJSON(myData, {style:popStyle, onEachFeature:popUp2000});
+
+var pop2010Layer = L.geoJSON(false, {
+  style:function (feature) {
+    return {
+      fillColor: classification(feature.properties.E01003097), weight: 1, opacity: 1, color: 'white', fillOpacity: 0.85
+    }
+  }, onEachFeature:popUp2010
+});
+
+var customLayer = L.geoJSON(false, {
+  style:function (feature) {
+    return {
+      fillColor: classificationCustom(feature.properties.POC), weight: 1, opacity: 1, color: 'white', fillOpacity: 0.85
+    }
+  }, onEachFeature:popUpCustom
+});
+
+$.getJSON("https://opendata.arcgis.com/datasets/42ba035b52b14df3b9b16653e8a1e46c_2593.geojson", function(data){pop2010Layer.addData(data); });
+$.getJSON("https://opendata.arcgis.com/datasets/b4cf82cdfa2b437eb51ccbfe980aa39e_2549.geojson", function(data){customLayer.addData(data); });
+
+</script>
+
+<button onclick="pop2000()">Total Population in 2000</button>
+<button onclick="pop2010()">Total Population in 2010</button>
+<button onclick="customPop()">Number of People of Color</button>
+<p>
+I made a button for a third map layer showing the number of people of color in a census tract. It is the "POC" classification and I did
+the classification in increments of 300. I had to make a new function classificationCustom to fit the numbers. Everythin that features "custom"
+somewhere in the name is the code that went into making the layer work. All the data I used was through the link provided in the instructions
+<br>
+<br>
+I also did the extra credit and made a popup for both 2000 and 2010 data.
+For 2010, I had to use OBJECTID and E01003097 in the classification function as opposed to the NAME and TotPop that I was given.
+
+</p>
+</body>
+</html>
